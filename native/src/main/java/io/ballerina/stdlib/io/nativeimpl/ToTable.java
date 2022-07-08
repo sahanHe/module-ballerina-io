@@ -27,6 +27,7 @@ import io.ballerina.runtime.api.types.TableType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.UnionType;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
@@ -79,7 +80,7 @@ public class ToTable {
     }
 
     private static BTable toTable(BTypedesc typedescValue, BArray key, List<String[]> records) {
-        Type describingType = typedescValue.getDescribingType();
+        Type describingType = TypeUtils.getReferredType(typedescValue.getDescribingType());
         TableType newTableType;
         if (key.size() == 0) {
             newTableType = TypeCreator.createTableType(describingType, false);
@@ -107,7 +108,7 @@ public class ToTable {
             struct = new HashMap<>();
             for (int i = 0; i < fieldLength; i++) {
                 final Field internalStructField = itr.next().getValue();
-                final int type = internalStructField.getFieldType().getTag();
+                final int type = TypeUtils.getReferredType(internalStructField.getFieldType()).getTag();
                 String fieldName = internalStructField.getFieldName();
                 if (fields.length > i) {
                     String value = fields[i];
@@ -121,10 +122,12 @@ public class ToTable {
                             break;
                         case TypeTags.UNION_TAG:
                             List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
-                            if (members.get(0).getTag() == TypeTags.NULL_TAG) {
-                                populateRecord(members.get(1).getTag(), struct, fieldName, value);
-                            } else if (members.get(1).getTag() == TypeTags.NULL_TAG) {
-                                populateRecord(members.get(0).getTag(), struct, fieldName, value);
+                            if (TypeUtils.getReferredType(members.get(0)).getTag() == TypeTags.NULL_TAG) {
+                                populateRecord(TypeUtils.getReferredType(members.get(1)).getTag(), 
+                                    struct, fieldName, value);
+                            } else if (TypeUtils.getReferredType(members.get(1)).getTag() == TypeTags.NULL_TAG) {
+                                populateRecord(TypeUtils.getReferredType(members.get(0)).getTag(), 
+                                    struct, fieldName, value);
                             } else {
                                 throw IOUtils.createError("unsupported nillable field for value: " + value);
                             }

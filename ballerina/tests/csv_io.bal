@@ -67,6 +67,22 @@ type Employee3 record {
     decimal salary;
 };
 
+type RefInt int;
+type RefStr string;
+type RefDec decimal;
+type RefBool boolean;
+type RefFloat float;
+
+type EmployeeRef record {
+    RefStr id;
+    RefInt hours_worked;
+    RefStr name;
+    RefDec salary;
+    RefBool martial_status;
+};
+
+
+
 @test:Config {}
 isolated function testReadCsv() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -1139,4 +1155,25 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
     }
     check content.close();
     test:assertEquals(i, 3);
+}
+
+@test:Config {}
+isolated function testTableContentRef() returns error? {
+    RefStr filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5Ref.csv";
+    RefDec expectedValue = 60001.00d;
+    RefDec total = 0.0d;
+    // RefInt expectedTotalHours = 60;
+    // RefInt totalHours = 0;
+
+    ReadableCSVChannel csvChannel = check openReadableCsvFile(filePath);
+    table<record {}> tableResult = check csvChannel.toTable(EmployeeRef, ["id"]);
+    table<EmployeeRef> tb = <table<EmployeeRef>>tableResult;
+    foreach EmployeeRef x in tb {
+        total = total + x.salary;
+        // totalHours = totalHours + x.hours_worked;
+        // test:assertEquals(x.martial_status, true);
+    }
+    test:assertEquals(total, expectedValue);
+    // test:assertEquals(totalHours, expectedTotalHours);
+    check csvChannel.close();
 }
