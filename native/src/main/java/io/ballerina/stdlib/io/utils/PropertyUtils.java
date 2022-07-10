@@ -27,8 +27,6 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BMapInitialValueEntry;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.io.channels.base.CharacterChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -43,7 +41,6 @@ import java.util.Set;
  * The utility class used to execute read/write operations to a property file.
  */
 public class PropertyUtils {
-    private static final Logger log = LoggerFactory.getLogger(PropertyUtils.class);
     private static final MapType mapType = TypeCreator.createMapType(PredefinedTypes.TYPE_STRING);
     private static Map<String, Properties> propertiesMap = new HashMap<>();
 

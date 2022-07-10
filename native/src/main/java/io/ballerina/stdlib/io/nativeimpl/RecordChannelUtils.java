@@ -36,8 +36,6 @@ import io.ballerina.stdlib.io.readers.CharacterChannelReader;
 import io.ballerina.stdlib.io.utils.BallerinaIOException;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,7 +55,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
  */
 public class RecordChannelUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(RecordChannelUtils.class);
     private static final String DEFAULT = "default";
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
     private static final String IS_CLOSED = "isClosed";
@@ -86,7 +83,6 @@ public class RecordChannelUtils {
         } catch (Exception e) {
             String message =
                     "error occurred while converting character channel to textRecord channel: " + e.getMessage();
-            log.error(message, e);
             throw IOUtils.createError(message);
         }
     }
@@ -102,7 +98,6 @@ public class RecordChannelUtils {
                 return textRecordChannel.hasNext();
             } catch (BallerinaIOException e) {
                 String msg = "error occurred while checking hasNext on ReadableTextRecordChannel: " + e.getMessage();
-                log.error(msg, e);
                 throw IOUtils.createError(msg);
             }
         }
@@ -122,7 +117,6 @@ public class RecordChannelUtils {
                 String[] records = textRecordChannel.read();
                 return StringUtils.fromStringArray(records);
             } catch (BallerinaIOException e) {
-                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
                 return IOUtils.createError(e);
             }
         }

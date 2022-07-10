@@ -18,8 +18,6 @@
 package io.ballerina.stdlib.io.channels.base;
 
 import io.ballerina.stdlib.io.utils.BallerinaIOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -51,8 +49,6 @@ public class Buffer {
      */
     private int minimumSizeOfBuffer;
 
-    private static final Logger log = LoggerFactory.getLogger(Buffer.class);
-
     public Buffer(int minimumSizeOfBuffer) {
         this.minimumSizeOfBuffer = minimumSizeOfBuffer;
     }
@@ -76,12 +72,7 @@ public class Buffer {
         ByteBuffer remainingContent = null;
         if (null != byteBuffer) {
             remainingContent = byteBuffer.slice();
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("ByteBuffer has not being initialized, buffer will be initialized while reading the " +
-                        "requested amount of " + totalNumberOfBytesRequired + " of bytes");
-            }
-        }
+        } 
         return remainingContent;
     }
 
