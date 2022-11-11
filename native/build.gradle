@@ -35,6 +35,9 @@ dependencies {
 
 test {
     useTestNG() {}
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+    }
     finalizedBy jacocoTestReport
 }
 
